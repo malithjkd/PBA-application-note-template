@@ -1,0 +1,53 @@
+%% sections/02-abstract.tex
+%% Abstract & Purpose
+%% IEC/IEEE 82079-1:2019 — Conceptual Information
+%% FAIR: Findable (keywords, structured summary)
+%% ─────────────────────────────────────────────────
+
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+\label{sec:abstract}
+
+%%
+%% WRITING GUIDE — ABSTRACT (3 structured fields):
+%%
+%%   WHAT THIS NOTE COVERS: One sentence. Name the task and the system.
+%%   WHAT YOU WILL ACHIEVE: The concrete outcome after following this note.
+%%   SCOPE: What is included and explicitly what is excluded.
+%%
+%% Keep the total abstract under 200 words.
+%%
+
+\noindent
+\begin{tcolorbox}[
+  enhanced, breakable,
+  colback=PBALightGray, colframe=PBABlue,
+  leftrule=4pt, rightrule=0.5pt, toprule=0.5pt, bottomrule=0.5pt,
+  arc=2pt, left=10pt, right=10pt, top=8pt, bottom=8pt,
+]
+
+\textbf{What this note covers:}\enspace
+This application note describes the complete procedure for configuring and
+commissioning force control mode on a PBA Systems GS-Series gantry system
+using an ACS SPiiPlus motion controller.
+
+\medskip
+\textbf{What you will achieve:}\enspace
+After following this note you will have a stable, calibrated force control
+loop that can apply a defined normal force in the Z-axis during bonding or
+pick-and-place tasks, with live force feedback visible on the ACS SPiiPlus
+MMI and logged via Python.
+
+\medskip
+\textbf{Scope:}\enspace
+This note covers sensor wiring, ACS controller parameter setup, a Python
+logging script, verification of the closed-loop response, and a
+troubleshooting table.
+It does \textit{not} cover: mechanical sensor installation, network
+configuration of the ACS controller, or process-specific force profiles.
+Refer to the relevant mechanical drawing and \mbox{PBA-AN-002-2025} for
+those topics.
+
+\end{tcolorbox}
+
+\clearpage

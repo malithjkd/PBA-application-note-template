@@ -1,0 +1,82 @@
+%% =============================================================================
+%% main.tex  —  PBA Systems Application Note
+%% Template version: 1.0
+%%
+%% INSTRUCTIONS:
+%%   1. Fill in the metadata fields below (\ANnumber, \ANtitle, etc.)
+%%   2. Edit each section file in the /sections/ folder
+%%   3. Put figures in /figures/ and code files in /code/
+%%   4. Add references to references.bib
+%%   5. Compile with pdfLaTeX (on Overleaf: default)
+%%
+%% COMPILER: pdfLaTeX (set in Overleaf Menu > Compiler)
+%% =============================================================================
+
+\documentclass{pba-appnote}
+
+%% ─── DOCUMENT METADATA ───────────────────────────────────────────────────────
+%% Fill these in before writing any content.
+
+\ANnumber{PBA-AN-001-2025}
+\ANtitle{Setting Up Force Control on PBA Gantry Systems}
+\ANversion{1.0}
+\ANdate{June 2025}
+\ANauthor{M. Researcher, PBA Systems}
+\ANreviewer{Senior Engineer, PBA Systems}
+\ANclassification{Customer-Facing}
+%%   Options: Internal | Customer-Facing | University | Public
+
+\ANsystem{PBA Gantry GS-Series (ACS SPiiPlus Controller)}
+\ANkeywords{force control, ACS SPiiPlus, ACSPL+, gantry system, bonding,
+            precision, setup, calibration, PBA}
+\ANrelated{PBA-AN-002-2025 (Thermal Compensation), PBA-AN-003-2025 (Error Mapping)}
+\ANlicense{PBA Systems Proprietary. Distribution per classification header.}
+
+%% ─── REVISION HISTORY ────────────────────────────────────────────────────────
+%% Add one \ANreventry per revision: {version}{date}{author}{change summary}
+\ANreventry{1.0}{2025-06-01}{M. Researcher}{Initial release}
+
+%% (Future revisions — uncomment and fill as needed)
+%\ANreventry{1.1}{YYYY-MM-DD}{Author}{What changed}
+%\ANreventry{2.0}{YYYY-MM-DD}{Author}{Major revision — describe here}
+
+%% ─── PDF METADATA ────────────────────────────────────────────────────────────
+%% Must come after all \AN... commands
+\setpdfmeta
+
+%% =============================================================================
+\begin{document}
+
+%% ── COVER PAGE ────────────────────────────────────────────────────────────────
+\makecover
+
+%% ── FRONT MATTER ──────────────────────────────────────────────────────────────
+\input{sections/01-doccontrol}
+\input{sections/02-abstract}
+
+%% ── TABLE OF CONTENTS ─────────────────────────────────────────────────────────
+\newpage
+\tableofcontents
+\newpage
+
+%% ── BODY ──────────────────────────────────────────────────────────────────────
+\input{sections/03-background}
+\input{sections/04-safety}
+\input{sections/05-setup}
+\input{sections/06-procedure}
+\input{sections/07-verification}
+\input{sections/08-troubleshooting}
+\input{sections/09-parameters}
+
+%% ── REFERENCES ────────────────────────────────────────────────────────────────
+\newpage
+\printbibliography[heading=bibintoc, title={References}]
+
+%% ── BACK MATTER ───────────────────────────────────────────────────────────────
+\appendix
+\input{sections/10-appendices}
+
+%% ── FAIR METADATA ─────────────────────────────────────────────────────────────
+\input{sections/11-metadata}
+
+\end{document}

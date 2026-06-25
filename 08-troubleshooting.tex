@@ -1,0 +1,125 @@
+%% sections/08-troubleshooting.tex
+%% Troubleshooting Guide
+%% IEC/IEEE 82079-1:2019 — Reference Information (§5)
+%% ─────────────────────────────────────────────────────
+
+\section{Troubleshooting}
+\label{sec:troubleshooting}
+
+%%
+%% WRITING GUIDE — TROUBLESHOOTING:
+%%
+%%   Use the \begin{troubletable} environment for the main table.
+%%   Each row: \troubrow{Problem}{Probable Cause}{Corrective Action}
+%%
+%%   Keep corrective actions specific and actionable.
+%%   Use \code{}, \acsparam{}, \cref{} inside cells.
+%%   Add rows as new issues are discovered in the field.
+%%
+
+\begin{troubletable}
+
+  \troubrow{%
+    Axis does not enable; MFLAGS bit 0 not set
+  }{%
+    E-Stop active, or interlock circuit open
+  }{%
+    Confirm E-Stop is released.  Check interlock status in
+    \menu{Axes > I/O Status}.
+  }
+
+  \troubrow{%
+    Force reading shows large offset ($>$\SI{0.5}{\newton}) at zero load
+  }{%
+    Sensor not zeroed, or temperature drift
+  }{%
+    Re-run Phase~1, Step~2 (\cref{sec:proc:phase1}).
+    Check sensor temperature stabilisation time ($\geq$15~min warm-up).
+  }
+
+  \troubrow{%
+    High noise on force signal ($>$\SI{0.5}{\newton} RMS)
+  }{%
+    Ground loop on sensor cable shield, or nearby EMI source
+  }{%
+    Verify cable shield is grounded at conditioner end ONLY.
+    Route cable away from motor drive cables.
+    Check AIN differential mode in MMI: \menu{Axes > Analogue Inputs}.
+  }
+
+  \troubrow{%
+    Force loop unstable — oscillates continuously
+  }{%
+    \acsparam{KP} too high, or derivative gain \acsparam{KD} too low
+  }{%
+    Reduce \acsparam{KP} by 50\,\%.  Set \acsparam{KI} = 0 temporarily.
+    Retune from baseline (\cref{tab:pid-defaults}).
+  }
+
+  \troubrow{%
+    Force undershoots setpoint; very slow convergence
+  }{%
+    \acsparam{KI} too low, or current limit \acsparam{DCURR} too low
+  }{%
+    Increase \acsparam{KI} by 0.01 steps.
+    Verify \acsparam{DCURR} is set to the motor's rated continuous
+    current (see motor datasheet).
+  }
+
+  \troubrow{%
+    ACS axis fault during force control run (FAULTS bit set)
+  }{%
+    Position error fault triggered (PEF), or current limit exceeded
+  }{%
+    Clear fault: \code{CLEAR} in MMI terminal.
+    Check \acsparam{XVEL} is set to a safe velocity limit.
+    Check workpiece compliance — very stiff contact surfaces can cause
+    transient current spikes.
+  }
+
+  \troubrow{%
+    Python script cannot connect to ACS controller
+  }{%
+    Wrong IP address, or firewall blocking port 701
+  }{%
+    Run \code{ping \textit{<controller-ip>}}.  Confirm port 701 is not
+    blocked by Windows Firewall.  Update \code{ACS\_IP} in the script.
+    See \cref{sec:setup:network}.
+  }
+
+  \troubrow{%
+    CSV force log shows only zeros
+  }{%
+    \code{acspy} library not connected, or wrong channel index
+  }{%
+    Check the \code{channel} parameter in the Python script matches the
+    physical AIN port used (0-indexed: AIN~1 = index~0).
+  }
+
+  \troubrow{%
+    Force drifts upward over time during sustained contact
+  }{%
+    Thermal zero drift of load cell, or material creep in workpiece
+  }{%
+    Re-zero sensor every 30~min.
+    Record ambient temperature alongside force data.
+    Apply thermal compensation factor from sensor datasheet.
+  }
+
+  \troubrow{%
+    ACS MMI shows ``Configuration mismatch'' after loading \filepath{.cfg}
+  }{%
+    Firmware version mismatch between config file and controller
+  }{%
+    Confirm controller firmware is $\geq$ 2.85.
+    Contact PBA Systems support with controller serial number to obtain
+    the correct config version.
+  }
+
+\end{troubletable}
+
+\begin{tipbox}
+  Record all field-discovered issues and their resolutions in the FORGE
+  dead-end registry under project \texttt{PBA-GANTRY-FC}.
+  This keeps the troubleshooting table growing with every deployment.
+\end{tipbox}
