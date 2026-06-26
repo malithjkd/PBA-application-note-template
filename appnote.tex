@@ -19,7 +19,7 @@
 %%  template (upload PBA-AN-Template.zip) to write real content.
 %% ============================================================================
 
-\documentclass[10pt, a4paper]{article}
+\documentclass[11pt, a4paper]{article}
 
 %% ── PACKAGES ─────────────────────────────────────────────────────────────────
 \usepackage[a4paper, top=27mm, bottom=24mm, left=22mm, right=22mm, headheight=15pt]{geometry}
@@ -29,6 +29,7 @@
 \usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{tikz}
 \usepackage[most, breakable]{tcolorbox}
 \usepackage{listings}
 \usepackage{booktabs}
@@ -37,15 +38,19 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{colortbl}
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage[per-mode=symbol]{siunitx}
 \usepackage{enumitem}
 \usepackage[font=small, labelfont=bf]{caption}
 \usepackage{subcaption}
 \usepackage{float}
 \usepackage{fancyhdr}
+\usepackage{lastpage}
 \usepackage[explicit]{titlesec}
-\usepackage[colorlinks=true, linkcolor=PBAMain, urlcolor=PBAAccent, citecolor=PBAMain]{hyperref}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue, citecolor=black]{hyperref}
 \usepackage{fontawesome5}
 
 %% ── COLORS ───────────────────────────────────────────────────────────────────
@@ -55,7 +60,7 @@
 \definecolor{PBAGray}{HTML}{4A4A4A}
 \definecolor{PBALightGray}{HTML}{F5F5F5}
 \definecolor{PBABorderGray}{HTML}{D0D0D0}
-\definecolor{PBATableHeader}{HTML}{00C300}
+\definecolor{PBATableHeader}{HTML}{70AD47}
 
 %% ANSI Z535.6 Signal Colors
 \definecolor{DangerRed}{HTML}{CC0000}
@@ -74,40 +79,40 @@
 \definecolor{PyKeyword}{HTML}{0000CD}
 \definecolor{PyString}{HTML}{B22222}
 \definecolor{PyComment}{HTML}{228B22}
+\definecolor{PythonBlue}{HTML}{3776AB}
 \definecolor{ACSKeyword}{HTML}{8B0000}
 \definecolor{ACSFunc}{HTML}{00008B}
 \definecolor{ACSComment}{HTML}{3A6B00}
 
 %% ── DOCUMENT METADATA ────────────────────────────────────────────────────────
-\newcommand{\ANnumber}{PBA-AN-001-2025}
-\newcommand{\ANtitle}{Setting Up Force Control on PBA Gantry Systems}
+\newcommand{\ANnumber}{AN-2026-019}
+\newcommand{\ANtitle}{Force consent estimation}
 \newcommand{\ANversion}{1.0}
-\newcommand{\ANdate}{June 2025}
-\newcommand{\ANauthor}{M. Researcher, PBA Systems}
-\newcommand{\ANreviewer}{Senior Engineer, PBA Systems}
-\newcommand{\ANclassification}{Customer-Facing}
+\newcommand{\ANdate}{June 2026}
 \newcommand{\ANsystem}{PBA Gantry GS-Series (ACS SPiiPlus)}
 \newcommand{\ANkeywords}{force control, ACS SPiiPlus, gantry, bonding, calibration}
 
 %% ── PAGE STYLE ───────────────────────────────────────────────────────────────
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\textcolor{PBAMain}{\footnotesize\textbf{\ANnumber}}}
+%% Header: Top-Left (ID), Top-Center (Title), Top-Right (Section Name for context)
+\fancyhead[L]{\textcolor{black}{\footnotesize\textbf{\ANnumber}}}
 \fancyhead[C]{\textcolor{PBAGray}{\footnotesize\ANtitle}}
-\fancyhead[R]{\textcolor{PBAGray}{\footnotesize Rev~\ANversion}}
-\fancyfoot[L]{\textcolor{PBAGray}{\footnotesize\textit{PBA Systems Pty Ltd}}}
-\fancyfoot[C]{\textcolor{PBAGray}{\footnotesize\thepage}}
-\fancyfoot[R]{\textcolor{PBAGray}{\footnotesize\ANclassification}}
+\fancyhead[R]{\textcolor{PBAGray}{\footnotesize\nouppercase{\leftmark}}}
+%% Footer: Bottom-Left (Ownership & Version), Bottom-Right (Page Number for easy flipping)
+\fancyfoot[L]{\raisebox{-0.25\height}{\includegraphics[height=18pt]{pba-logo.png}} \quad\textcolor{PBAGray}{\footnotesize|\quad Rev~\ANversion}}
+\fancyfoot[C]{}
+\fancyfoot[R]{\textcolor{black}{\footnotesize Page \thepage\ of \pageref{LastPage}}}
 \renewcommand{\headrulewidth}{0.5pt}
-\renewcommand{\headrule}{\hbox to\headwidth{\color{PBAMain}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{PBAGray}\leaders\hrule height \headrulewidth\hfill}}
 \renewcommand{\footrulewidth}{0.3pt}
 \renewcommand{\footrule}{\hbox to\headwidth{\color{PBABorderGray}\leaders\hrule height \footrulewidth\hfill}}
 \fancypagestyle{coverpage}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0pt}}
 
 %% ── SECTION HEADINGS ─────────────────────────────────────────────────────────
-\titleformat{\section}{\color{PBAMain}\large\bfseries}{\thesection}{0.8em}{#1}
-  [\vspace{-4pt}\color{PBAAccent}\rule{\linewidth}{1.5pt}]
-\titleformat{\subsection}{\color{PBAMain}\normalsize\bfseries}{\thesubsection}{0.7em}{#1}
+\titleformat{\section}{\color{black}\large\bfseries}{\thesection}{0.8em}{#1}
+  [\vspace{-4pt}\color{PBAGray}\rule{\linewidth}{0.5pt}]
+\titleformat{\subsection}{\color{black}\normalsize\bfseries}{\thesubsection}{0.7em}{#1}
 \titleformat{\subsubsection}{\color{PBAGray}\normalsize\bfseries\itshape}{\thesubsubsection}{0.7em}{#1}
 \titlespacing*{\section}{0pt}{16pt}{7pt}
 \titlespacing*{\subsection}{0pt}{10pt}{4pt}
@@ -172,10 +177,10 @@
   commentstyle=\color{ACSComment}\itshape}
 
 \newenvironment{pythoncode}[1][Python Script]{%
-  \begin{tcolorbox}[breakable,enhanced,colback=CodeBg,colframe=PBAMain,
+  \begin{tcolorbox}[breakable,enhanced,colback=CodeBg,colframe=PythonBlue,
     arc=0pt,title={\textcolor{white}{\faCode\quad\textbf{#1}}},
     attach boxed title to top left={yshift=-2mm,xshift=4mm},
-    boxed title style={colback=PBAMain,arc=3pt,boxrule=0pt},
+    boxed title style={colback=PythonBlue,arc=3pt,boxrule=0pt},
     left=0pt,right=0pt,top=6pt,bottom=4pt,boxrule=0.5pt]
   \lstset{style=python}\vspace{-2pt}}{\end{tcolorbox}}
 
@@ -205,9 +210,22 @@
   colframe=NoteBlue,leftrule=4pt,rightrule=0.4pt,toprule=0.4pt,bottomrule=0.4pt,
   arc=2pt,left=8pt,right=8pt,top=4pt,bottom=4pt]
   \textcolor{NoteBlue}{\faPlayCircle\enspace\textbf{Video reference:}}\enspace
-  \href{#1}{\textcolor{PBAAccent}{\underline{#2}}}
+  \href{#1}{\textcolor{blue}{\underline{#2}}}
   \end{tcolorbox}}
 \newcommand{\fignote}[1]{\par\vspace{-4pt}\textcolor{PBAGray}{\footnotesize\textit{Note: #1}}\par}
+
+
+
+
+
+%% lease some space to begin document speration
+
+
+
+
+
+
+
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \begin{document}
@@ -215,97 +233,52 @@
 %% ══════════════════════════════════════════════════════════════════════════════
 %%  COVER PAGE
 %% ══════════════════════════════════════════════════════════════════════════════
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[inner sep=0pt, outer sep=0pt] at (current page.center) {
+    \includegraphics[width=\paperwidth, height=\paperheight]{front-page.png}
+  };
+\end{tikzpicture}
+
+
+\vspace{90mm}
+
+\begin{center}
+  \begin{tcolorbox}[enhanced, colback=black, opacityback=0.45,
+    boxrule=0pt, opacityframe=0, arc=15pt, width=\textwidth, halign=center, colupper=white, top=10mm, bottom=10mm]
+    {\Large APPLICATION NOTE}\\[10mm]
+    {\fontsize{26}{32}\selectfont\bfseries \ANtitle}\\[10mm]
+    {\large Document ID : \textbf{\ANnumber}}\\[4mm]
+    {\large \ANdate}
+  \end{tcolorbox}
+\end{center}
+
+
+\clearpage
+
+%% ══════════════════════════════════════════════════════════════════════════════
+%%  REVISION HISTORY
+%% ══════════════════════════════════════════════════════════════════════════════
 \thispagestyle{coverpage}
-\begin{titlepage}
-  \noindent\textcolor{PBAMain}{\rule{\textwidth}{4pt}}
-  \vspace{4pt}
-  \noindent\textcolor{PBAAccent}{\rule{\textwidth}{1.5pt}}
-  \vspace{14mm}
+\section*{Revision History}
+\vspace{4mm}
+\begin{tabularx}{\textwidth}{@{} l l X @{}}
+  \toprule
+  \rowcolor{PBATableHeader}
+  \textcolor{white}{\bfseries Version} & \textcolor{white}{\bfseries Date} & \textcolor{white}{\bfseries Description} \\
+  \midrule
+  \ANversion & \ANdate & Initial release \\
+  \bottomrule
+\end{tabularx}
 
-  \noindent
-  \begin{minipage}[t]{0.55\textwidth}
-    \colorbox{PBAAccent}{\textcolor{white}{\small\bfseries\quad CUSTOMER-FACING\quad}}
-  \end{minipage}%
-  \begin{minipage}[t]{0.44\textwidth}
-    \raggedleft
-    %% Replace the fbox below with: \includegraphics[height=14mm]{pba-logo.png}
-    \fbox{\parbox{40mm}{\centering\vspace{4mm}
-      \textcolor{PBAMain}{\large\bfseries PBA Systems}\vspace{4mm}}}
-  \end{minipage}
-
-  \vspace{18mm}
-  \noindent{\textcolor{PBAGray}{\large APPLICATION NOTE
-    \quad \textcolor{PBAMain}{\textbf{\ANnumber}}}}
-  \vspace{6mm}
-
-  \noindent{\textcolor{PBAMain}{\fontsize{22}{28}\selectfont\bfseries \ANtitle}}
-  \vspace{8mm}
-
-  \noindent{\textcolor{PBAGray}{\normalsize\itshape System: \ANsystem}}
-  \vspace{12mm}
-
-  \noindent
-  \begin{tabularx}{\textwidth}{@{} >{\bfseries\color{PBAMain}}l X @{}}
-    \toprule
-    \rowcolor{PBALightGray}
-    Version       & \ANversion \\
-    Date          & \ANdate \\
-    \rowcolor{PBALightGray}
-    Author        & \ANauthor \\
-    Reviewed by   & \ANreviewer \\
-    \rowcolor{PBALightGray}
-    Classification & \ANclassification \\
-    \bottomrule
-  \end{tabularx}
-
-  \vspace{10mm}
-  \noindent\textcolor{PBAGray}{\small\textbf{Keywords:} \textit{\ANkeywords}}
-
-  \vfill
-  \noindent\textcolor{PBAAccent}{\rule{\textwidth}{1.5pt}}
-  \vspace{4pt}
-  \noindent\textcolor{PBAMain}{\rule{\textwidth}{4pt}}
-\end{titlepage}
+\vspace{10mm}
+\noindent\textcolor{PBAGray}{\small\textbf{Keywords:} \textit{\ANkeywords}}
 \clearpage
 
 %% ══════════════════════════════════════════════════════════════════════════════
-%%  TABLE OF CONTENTS
-%% ══════════════════════════════════════════════════════════════════════════════
-\tableofcontents
-\clearpage
-
-%% ══════════════════════════════════════════════════════════════════════════════
-\section{Background and Theory}
-
-The PBA GS-Series gantry operates in force control mode by replacing
-the position error signal with a force error derived from an analogue
-load cell.  The control relationship is:
-
-\begin{equation}
-  F_{\text{applied}} = k_f \cdot I_{\text{cmd}} - F_{\text{preload}}
-\end{equation}
-
-where $k_f$ is the motor force constant [\si{\newton\per\ampere}] and
-$F_{\text{preload}}$ is the Z-axis gravitational preload [\si{\newton}].
-
-\begin{table}[H]
-  \centering
-  \caption{Baseline PID gains for force control on PBA GS-Series.}
-  \begin{tabular}{@{} l l l l @{}}
-    \toprule
-    \textbf{Parameter} & \textbf{Description} & \textbf{Baseline} & \textbf{Unit} \\
-    \midrule
-    \acsparam{KP} & Proportional gain & 2.5 & \si{\ampere\per\newton} \\
-    \rowcolor{PBALightGray}
-    \acsparam{KI} & Integral gain & 0.08 & \si{\ampere\per\newton\per\second} \\
-    \acsparam{KD} & Derivative gain & 0.001 & \si{\ampere\second\per\newton} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-
-%% ══════════════════════════════════════════════════════════════════════════════
-\section{Prerequisites and Safety Notices}
+\thispagestyle{coverpage}
+\section*{Prerequisites and Safety Notices}
+\addcontentsline{toc}{section}{Prerequisites and Safety Notices}
 
 \begin{dangerbox}
   The Z-axis motor exerts forces up to \SI{500}{\newton}. Never place hands
@@ -337,6 +310,46 @@ $F_{\text{preload}}$ is the Z-axis gravitational preload [\si{\newton}].
   \menu{File > Save Configuration} in the ACS MMI after confirming
   stable operation.
 \end{notebox}
+\clearpage
+
+%% ══════════════════════════════════════════════════════════════════════════════
+%%  TABLE OF CONTENTS
+%% ══════════════════════════════════════════════════════════════════════════════
+\tableofcontents
+\clearpage
+
+%% ══════════════════════════════════════════════════════════════════════════════
+\section{Background and Theory}
+
+The PBA GS-Series gantry operates in force control mode by replacing
+the position error signal with a force error derived from an analogue
+load cell.  The control relationship is:
+
+\begin{equation}
+  F_{\text{applied}} = k_f \cdot I_{\text{cmd}} - F_{\text{preload}}
+\end{equation}
+
+where $k_f$ is the motor force constant [\si{\newton\per\ampere}] and
+$F_{\text{preload}}$ is the Z-axis gravitational preload [\si{\newton}].
+
+\begin{table}[H]
+  \centering
+  
+  \caption{Baseline PID gains for force control on PBA GS-Series.}
+  \begin{tabular}{@{} l l l l @{}}
+  \toprule
+  \rowcolor{PBATableHeader}
+    \textbf{Parameter} & \textbf{Description} & \textbf{Baseline} & \textbf{Unit} \\
+  \midrule
+    \acsparam{KP} & Proportional gain & 2.5 & \si{\ampere\per\newton} \\
+    \rowcolor{PBALightGray}
+    \acsparam{KI} & Integral gain & 0.08 & \si{\ampere\per\newton\per\second} \\
+    \acsparam{KD} & Derivative gain & 0.001 & \si{\ampere\second\per\newton} \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+
 
 
 %% ══════════════════════════════════════════════════════════════════════════════
@@ -389,7 +402,7 @@ PRINT "Gains set. KP=", KP(0)
 
 Run the logger from the host PC while the Z-axis makes contact:
 
-\begin{pythoncode}[force\_logger.py — launch from terminal]
+\begin{pythoncode}[\href{https://github.com/malithjkd/force_controller/blob/main/ACS_force_control/Force_constent_and_spring_constent_data/NPD00491_motor_force_constnet_analysis.ipynb}{\textcolor{white}{\faGithub\enspace force\_logger.py — launch from terminal}}]
 \begin{lstlisting}
 # Navigate to the project folder
 cd C:\PBA\ForceControl\scripts
@@ -397,7 +410,7 @@ cd C:\PBA\ForceControl\scripts
 # Log for 30 seconds at 100 Hz
 python force_logger.py --ip 10.0.0.100 --duration 30
 
-# Quick check — print stats from the log
+# Quick check-print stats from the log
 import pandas as pd
 df = pd.read_csv("force_log.csv")
 print(f"Max force: {df['force_N'].max():.2f} N")
@@ -421,7 +434,6 @@ print(f"Noise RMS: {df['force_N'].std():.4f} N")
   \textcolor{white}{\bfseries Pass?} \\
   \midrule
   Force tracking error (steady state) & $<\pm$\SI{0.3}{\newton} & \rule{1.5cm}{0.4pt} & $\square$ \\
-  \rowcolor{PBALightGray}
   Force noise RMS (no contact) & $<$\SI{0.1}{\newton} & \rule{1.5cm}{0.4pt} & $\square$ \\
   Step response settling time & $<$\SI{150}{\milli\second} & \rule{1.5cm}{0.4pt} & $\square$ \\
   \rowcolor{PBALightGray}
@@ -434,24 +446,13 @@ print(f"Noise RMS: {df['force_N'].std():.4f} N")
 %% ══════════════════════════════════════════════════════════════════════════════
 \section{Troubleshooting}
 
-\begin{longtable}{@{} >{\bfseries\color{DangerRed}}p{0.28\textwidth}
-                       p{0.32\textwidth} p{0.32\textwidth} @{}}
+\noindent
+\begin{tabularx}{\textwidth}{@{} >{\bfseries\color{DangerRed}}X X X @{}}
+  \toprule
   \rowcolor{PBATableHeader}
-  \textcolor{white}{\bfseries\normalfont Problem} &
-  \textcolor{white}{\bfseries Probable Cause} &
-  \textcolor{white}{\bfseries Corrective Action} \\
-  \endfirsthead
-  \rowcolor{PBATableHeader}
-  \textcolor{white}{\bfseries\normalfont Problem} &
-  \textcolor{white}{\bfseries Probable Cause} &
-  \textcolor{white}{\bfseries Corrective Action} \\
-  \endhead
-  \bottomrule
-  \endlastfoot
-
-  Axis does not enable &
-    E-Stop active or interlock open &
-    Release E-Stop. Check I/O status in MMI. \\
+  \textcolor{white}{Problem} &   \textcolor{white}{Probable Cause} &   \textcolor{white}{Corrective Action} \\
+  \midrule
+  Axis does not enable &     E-Stop active or interlock open &     Release E-Stop. Check I/O status in MMI. \\
   \rowcolor{PBALightGray}
   Force offset $>$\SI{0.5}{\newton} at zero load &
     Sensor not zeroed or thermal drift &
@@ -463,25 +464,21 @@ print(f"Noise RMS: {df['force_N'].std():.4f} N")
   Force loop oscillates &
     \acsparam{KP} too high &
     Reduce \acsparam{KP} by 50\%. Reset \acsparam{KI}=0, retune. \\
-\end{longtable}
-
-
-%% ══════════════════════════════════════════════════════════════════════════════
-\section*{Keywords and FAIR Metadata}
-\addcontentsline{toc}{section}{FAIR Metadata}
-
-\begin{center}
-\begin{tabularx}{\textwidth}{@{} >{\bfseries\color{PBAMain}}l X @{}}
-  \toprule
-  Document ID & \texttt{\ANnumber} \\
-  \rowcolor{PBALightGray}
-  Keywords & force control; ACS SPiiPlus; gantry; bonding; calibration \\
-  Data format & CSV (UTF-8, ISO 8601 timestamps) \\
-  \rowcolor{PBALightGray}
-  Standards & IEC/IEEE 82079-1:2019 · ANSI Z535.6 · FAIR Principles \\
-  License & PBA Systems Proprietary \\
   \bottomrule
 \end{tabularx}
-\end{center}
 
+
+
+
+
+\clearpage
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[inner sep=0pt, outer sep=0pt] at (current page.center) {
+    \includegraphics[width=\paperwidth, height=\paperheight]{last-page.png}
+  };
+\end{tikzpicture}
+\null\clearpage
 \end{document}
+
+
