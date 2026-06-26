@@ -1,6 +1,6 @@
 """
 force_logger.py
-PBA Systems — Force Control Data Logger
+PBA Systems - Force Control Data Logger
 Application Note: PBA-AN-001-2025
 
 Connects to an ACS SPiiPlus controller via Ethernet and logs
@@ -21,16 +21,16 @@ from datetime import datetime
 
 import numpy as np
 
-# ── CONFIGURATION ──────────────────────────────────────────────────────────────
+# -- CONFIGURATION --------------------------------------------------------------
 ACS_IP          = "10.0.0.100"   # ACS controller IP
 ACS_PORT        = 701            # Default ACS Ethernet port
 SAMPLE_RATE     = 100            # [Hz]
-DURATION        = 30             # [s] — default logging duration
+DURATION        = 30             # [s] - default logging duration
 OUTPUT_FILE     = "force_log.csv"
 AIN_CHANNEL     = 0              # 0-indexed (AIN 1 = index 0)
-SENSOR_SCALE    = 100.0          # [N/V] — must match ACSPL+ SENSOR_SCALE
-FORCE_OFFSET    = 0.0            # [V]   — updated from ACS global at runtime
-# ───────────────────────────────────────────────────────────────────────────────
+SENSOR_SCALE    = 100.0          # [N/V] - must match ACSPL+ SENSOR_SCALE
+FORCE_OFFSET    = 0.0            # [V]   - updated from ACS global at runtime
+# -------------------------------------------------------------------------------
 
 
 def connect_acs(ip: str, port: int = 701):
