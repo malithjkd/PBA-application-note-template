@@ -1,0 +1,487 @@
+%% ============================================================================
+%% QUICK_PREVIEW.tex  —  PBA Systems Application Note  STANDALONE PREVIEW
+%% ============================================================================
+%%
+%%  PURPOSE: Paste this single file into a NEW Overleaf project and hit
+%%           Compile to see the full layout rendered immediately.
+%%           No other files are needed.
+%%
+%%  HOW TO USE:
+%%    1. Go to overleaf.com → New Project → Blank Project
+%%    2. Delete the default content in main.tex
+%%    3. Paste this entire file
+%%    4. Click "Recompile"
+%%
+%%  COMPILER: pdfLaTeX  (Overleaf default — no change needed)
+%%  PACKAGES: All standard CTAN packages, pre-installed on Overleaf.
+%%
+%%  After you are happy with the look, switch to the full multi-file
+%%  template (upload PBA-AN-Template.zip) to write real content.
+%% ============================================================================
+
+\documentclass[10pt, a4paper]{article}
+
+%% ── PACKAGES ─────────────────────────────────────────────────────────────────
+\usepackage[a4paper, top=27mm, bottom=24mm, left=22mm, right=22mm, headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[most, breakable]{tcolorbox}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage[per-mode=symbol]{siunitx}
+\usepackage{enumitem}
+\usepackage[font=small, labelfont=bf]{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage[explicit]{titlesec}
+\usepackage[colorlinks=true, linkcolor=PBAMain, urlcolor=PBAAccent, citecolor=PBAMain]{hyperref}
+\usepackage{fontawesome5}
+
+%% ── COLORS ───────────────────────────────────────────────────────────────────
+%%  TODO: Replace these with your real PBA brand hex codes
+\definecolor{PBAMain}{HTML}{00C300}
+\definecolor{PBAAccent}{HTML}{82FF00}
+\definecolor{PBAGray}{HTML}{4A4A4A}
+\definecolor{PBALightGray}{HTML}{F5F5F5}
+\definecolor{PBABorderGray}{HTML}{D0D0D0}
+\definecolor{PBATableHeader}{HTML}{00C300}
+
+%% ANSI Z535.6 Signal Colors
+\definecolor{DangerRed}{HTML}{CC0000}
+\definecolor{DangerBg}{HTML}{FFEBEB}
+\definecolor{WarningOrange}{HTML}{BF4600}
+\definecolor{WarningBg}{HTML}{FFF3E0}
+\definecolor{CautionAmber}{HTML}{8C6D00}
+\definecolor{CautionBg}{HTML}{FFFDE7}
+\definecolor{NoteBlue}{HTML}{0055AA}
+\definecolor{NoteBg}{HTML}{E8F0FB}
+\definecolor{TipGreen}{HTML}{2E7D32}
+\definecolor{TipBg}{HTML}{E8F5E9}
+
+%% Code Colors
+\definecolor{CodeBg}{HTML}{F8F8F8}
+\definecolor{PyKeyword}{HTML}{0000CD}
+\definecolor{PyString}{HTML}{B22222}
+\definecolor{PyComment}{HTML}{228B22}
+\definecolor{ACSKeyword}{HTML}{8B0000}
+\definecolor{ACSFunc}{HTML}{00008B}
+\definecolor{ACSComment}{HTML}{3A6B00}
+
+%% ── DOCUMENT METADATA ────────────────────────────────────────────────────────
+\newcommand{\ANnumber}{PBA-AN-001-2025}
+\newcommand{\ANtitle}{Setting Up Force Control on PBA Gantry Systems}
+\newcommand{\ANversion}{1.0}
+\newcommand{\ANdate}{June 2025}
+\newcommand{\ANauthor}{M. Researcher, PBA Systems}
+\newcommand{\ANreviewer}{Senior Engineer, PBA Systems}
+\newcommand{\ANclassification}{Customer-Facing}
+\newcommand{\ANsystem}{PBA Gantry GS-Series (ACS SPiiPlus)}
+\newcommand{\ANkeywords}{force control, ACS SPiiPlus, gantry, bonding, calibration}
+
+%% ── PAGE STYLE ───────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{PBAMain}{\footnotesize\textbf{\ANnumber}}}
+\fancyhead[C]{\textcolor{PBAGray}{\footnotesize\ANtitle}}
+\fancyhead[R]{\textcolor{PBAGray}{\footnotesize Rev~\ANversion}}
+\fancyfoot[L]{\textcolor{PBAGray}{\footnotesize\textit{PBA Systems Pty Ltd}}}
+\fancyfoot[C]{\textcolor{PBAGray}{\footnotesize\thepage}}
+\fancyfoot[R]{\textcolor{PBAGray}{\footnotesize\ANclassification}}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{PBAMain}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrulewidth}{0.3pt}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{PBABorderGray}\leaders\hrule height \footrulewidth\hfill}}
+\fancypagestyle{coverpage}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0pt}}
+
+%% ── SECTION HEADINGS ─────────────────────────────────────────────────────────
+\titleformat{\section}{\color{PBAMain}\large\bfseries}{\thesection}{0.8em}{#1}
+  [\vspace{-4pt}\color{PBAAccent}\rule{\linewidth}{1.5pt}]
+\titleformat{\subsection}{\color{PBAMain}\normalsize\bfseries}{\thesubsection}{0.7em}{#1}
+\titleformat{\subsubsection}{\color{PBAGray}\normalsize\bfseries\itshape}{\thesubsubsection}{0.7em}{#1}
+\titlespacing*{\section}{0pt}{16pt}{7pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+%% ── CALLOUT BOXES ────────────────────────────────────────────────────────────
+\tcbuselibrary{skins, breakable}
+
+\newenvironment{dangerbox}{%
+  \begin{tcolorbox}[breakable,enhanced,colback=DangerBg,colframe=DangerRed,
+    leftrule=4pt,rightrule=0.4pt,toprule=0.4pt,bottomrule=0.4pt,arc=2pt,
+    fontupper=\small,before upper={\textcolor{DangerRed}{\textbf{\faDizzy\quad DANGER}}\par\smallskip},
+    left=8pt,right=8pt,top=6pt,bottom=6pt]}{\end{tcolorbox}}
+
+\newenvironment{warningbox}{%
+  \begin{tcolorbox}[breakable,enhanced,colback=WarningBg,colframe=WarningOrange,
+    leftrule=4pt,rightrule=0.4pt,toprule=0.4pt,bottomrule=0.4pt,arc=2pt,
+    fontupper=\small,before upper={\textcolor{WarningOrange}{\textbf{\faExclamationTriangle\quad WARNING}}\par\smallskip},
+    left=8pt,right=8pt,top=6pt,bottom=6pt]}{\end{tcolorbox}}
+
+\newenvironment{cautionbox}{%
+  \begin{tcolorbox}[breakable,enhanced,colback=CautionBg,colframe=CautionAmber,
+    leftrule=4pt,rightrule=0.4pt,toprule=0.4pt,bottomrule=0.4pt,arc=2pt,
+    fontupper=\small,before upper={\textcolor{CautionAmber}{\textbf{\faExclamationCircle\quad CAUTION}}\par\smallskip},
+    left=8pt,right=8pt,top=6pt,bottom=6pt]}{\end{tcolorbox}}
+
+\newenvironment{notebox}{%
+  \begin{tcolorbox}[breakable,enhanced,colback=NoteBg,colframe=NoteBlue,
+    leftrule=4pt,rightrule=0.4pt,toprule=0.4pt,bottomrule=0.4pt,arc=2pt,
+    fontupper=\small,before upper={\textcolor{NoteBlue}{\textbf{\faInfoCircle\quad NOTE}}\par\smallskip},
+    left=8pt,right=8pt,top=6pt,bottom=6pt]}{\end{tcolorbox}}
+
+\newenvironment{tipbox}{%
+  \begin{tcolorbox}[breakable,enhanced,colback=TipBg,colframe=TipGreen,
+    leftrule=4pt,rightrule=0.4pt,toprule=0.4pt,bottomrule=0.4pt,arc=2pt,
+    fontupper=\small,before upper={\textcolor{TipGreen}{\textbf{\faLightbulb\quad TIP}}\par\smallskip},
+    left=8pt,right=8pt,top=6pt,bottom=6pt]}{\end{tcolorbox}}
+
+%% ── CODE LISTINGS ────────────────────────────────────────────────────────────
+\lstdefinelanguage{Python3}{
+  keywords={and,as,assert,async,await,break,class,continue,def,del,elif,else,
+            except,False,finally,for,from,global,if,import,in,is,lambda,None,
+            nonlocal,not,or,pass,raise,return,True,try,while,with,yield},
+  sensitive=true, morecomment=[l]{\#}, morestring=[b]', morestring=[b]",
+}
+\lstdefinelanguage{ACSPL}{
+  keywords={IF,THEN,ELSE,ELSEIF,END,WHILE,DO,LOOP,FOR,TO,STEP,NEXT,GOTO,
+            RETURN,STOP,HALT,WAIT,SLEEP,KILL,INT,REAL,STRING,GLOBAL,LOCAL},
+  morekeywords=[2]{SERVOSON,SERVOSOFF,ENABLE,DISABLE,MOVE,PTP,VEL,ACC,JERK,
+                   DCURR,PCURR,ECURR,MFLAGS,AIN,AOUT,PRINT,START,CLEAR},
+  sensitive=false, morecomment=[l]{;},
+}
+\lstdefinestyle{pbabase}{basicstyle=\ttfamily\small,numbers=left,
+  numberstyle=\tiny\color{PBAGray},numbersep=8pt,breaklines=true,
+  showspaces=false,showstringspaces=false,frame=none,
+  backgroundcolor=\color{CodeBg},xleftmargin=12pt,aboveskip=4pt,belowskip=4pt}
+\lstdefinestyle{python}{style=pbabase,language=Python3,
+  keywordstyle=\color{PyKeyword}\bfseries,stringstyle=\color{PyString},
+  commentstyle=\color{PyComment}\itshape}
+\lstdefinestyle{acs}{style=pbabase,language=ACSPL,
+  keywordstyle=\color{ACSKeyword}\bfseries,
+  keywordstyle=[2]\color{ACSFunc}\bfseries,
+  commentstyle=\color{ACSComment}\itshape}
+
+\newenvironment{pythoncode}[1][Python Script]{%
+  \begin{tcolorbox}[breakable,enhanced,colback=CodeBg,colframe=PBAMain,
+    arc=0pt,title={\textcolor{white}{\faCode\quad\textbf{#1}}},
+    attach boxed title to top left={yshift=-2mm,xshift=4mm},
+    boxed title style={colback=PBAMain,arc=3pt,boxrule=0pt},
+    left=0pt,right=0pt,top=6pt,bottom=4pt,boxrule=0.5pt]
+  \lstset{style=python}\vspace{-2pt}}{\end{tcolorbox}}
+
+\newenvironment{acscode}[1][ACS ACSPL+ Script]{%
+  \begin{tcolorbox}[breakable,enhanced,colback=CodeBg,colframe=ACSKeyword,
+    arc=0pt,title={\textcolor{white}{\faTerminal\quad\textbf{#1}}},
+    attach boxed title to top left={yshift=-2mm,xshift=4mm},
+    boxed title style={colback=ACSKeyword,arc=3pt,boxrule=0pt},
+    left=0pt,right=0pt,top=6pt,bottom=4pt,boxrule=0.5pt]
+  \lstset{style=acs}\vspace{-2pt}}{\end{tcolorbox}}
+
+%% ── STEP LIST ────────────────────────────────────────────────────────────────
+\newlist{steplist}{enumerate}{1}
+\setlist[steplist]{label=\textcolor{PBAMain}{\textbf{Step \arabic*.}},
+  leftmargin=*, labelsep=0.8em, itemsep=8pt, topsep=4pt}
+\newcommand{\step}{\item}
+\newcommand{\outcome}[1]{\par\smallskip\noindent
+  \textcolor{TipGreen}{\faCheckCircle\quad\textbf{Expected outcome:}}\enspace
+  \textit{#1}\par\smallskip}
+
+%% ── HELPERS ──────────────────────────────────────────────────────────────────
+\newcommand{\code}[1]{\texttt{\textcolor{PBAMain}{#1}}}
+\newcommand{\acsparam}[1]{\texttt{\textcolor{ACSKeyword}{\bfseries#1}}}
+\newcommand{\filepath}[1]{\texttt{\textcolor{PBAGray}{#1}}}
+\newcommand{\menu}[1]{\textit{\textcolor{PBAGray}{#1}}}
+\newcommand{\videolink}[2]{\noindent\begin{tcolorbox}[enhanced,colback=NoteBg,
+  colframe=NoteBlue,leftrule=4pt,rightrule=0.4pt,toprule=0.4pt,bottomrule=0.4pt,
+  arc=2pt,left=8pt,right=8pt,top=4pt,bottom=4pt]
+  \textcolor{NoteBlue}{\faPlayCircle\enspace\textbf{Video reference:}}\enspace
+  \href{#1}{\textcolor{PBAAccent}{\underline{#2}}}
+  \end{tcolorbox}}
+\newcommand{\fignote}[1]{\par\vspace{-4pt}\textcolor{PBAGray}{\footnotesize\textit{Note: #1}}\par}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+%% ══════════════════════════════════════════════════════════════════════════════
+%%  COVER PAGE
+%% ══════════════════════════════════════════════════════════════════════════════
+\thispagestyle{coverpage}
+\begin{titlepage}
+  \noindent\textcolor{PBAMain}{\rule{\textwidth}{4pt}}
+  \vspace{4pt}
+  \noindent\textcolor{PBAAccent}{\rule{\textwidth}{1.5pt}}
+  \vspace{14mm}
+
+  \noindent
+  \begin{minipage}[t]{0.55\textwidth}
+    \colorbox{PBAAccent}{\textcolor{white}{\small\bfseries\quad CUSTOMER-FACING\quad}}
+  \end{minipage}%
+  \begin{minipage}[t]{0.44\textwidth}
+    \raggedleft
+    %% Replace the fbox below with: \includegraphics[height=14mm]{pba-logo.png}
+    \fbox{\parbox{40mm}{\centering\vspace{4mm}
+      \textcolor{PBAMain}{\large\bfseries PBA Systems}\vspace{4mm}}}
+  \end{minipage}
+
+  \vspace{18mm}
+  \noindent{\textcolor{PBAGray}{\large APPLICATION NOTE
+    \quad \textcolor{PBAMain}{\textbf{\ANnumber}}}}
+  \vspace{6mm}
+
+  \noindent{\textcolor{PBAMain}{\fontsize{22}{28}\selectfont\bfseries \ANtitle}}
+  \vspace{8mm}
+
+  \noindent{\textcolor{PBAGray}{\normalsize\itshape System: \ANsystem}}
+  \vspace{12mm}
+
+  \noindent
+  \begin{tabularx}{\textwidth}{@{} >{\bfseries\color{PBAMain}}l X @{}}
+    \toprule
+    \rowcolor{PBALightGray}
+    Version       & \ANversion \\
+    Date          & \ANdate \\
+    \rowcolor{PBALightGray}
+    Author        & \ANauthor \\
+    Reviewed by   & \ANreviewer \\
+    \rowcolor{PBALightGray}
+    Classification & \ANclassification \\
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{10mm}
+  \noindent\textcolor{PBAGray}{\small\textbf{Keywords:} \textit{\ANkeywords}}
+
+  \vfill
+  \noindent\textcolor{PBAAccent}{\rule{\textwidth}{1.5pt}}
+  \vspace{4pt}
+  \noindent\textcolor{PBAMain}{\rule{\textwidth}{4pt}}
+\end{titlepage}
+\clearpage
+
+%% ══════════════════════════════════════════════════════════════════════════════
+%%  TABLE OF CONTENTS
+%% ══════════════════════════════════════════════════════════════════════════════
+\tableofcontents
+\clearpage
+
+%% ══════════════════════════════════════════════════════════════════════════════
+\section{Background and Theory}
+
+The PBA GS-Series gantry operates in force control mode by replacing
+the position error signal with a force error derived from an analogue
+load cell.  The control relationship is:
+
+\begin{equation}
+  F_{\text{applied}} = k_f \cdot I_{\text{cmd}} - F_{\text{preload}}
+\end{equation}
+
+where $k_f$ is the motor force constant [\si{\newton\per\ampere}] and
+$F_{\text{preload}}$ is the Z-axis gravitational preload [\si{\newton}].
+
+\begin{table}[H]
+  \centering
+  \caption{Baseline PID gains for force control on PBA GS-Series.}
+  \begin{tabular}{@{} l l l l @{}}
+    \toprule
+    \textbf{Parameter} & \textbf{Description} & \textbf{Baseline} & \textbf{Unit} \\
+    \midrule
+    \acsparam{KP} & Proportional gain & 2.5 & \si{\ampere\per\newton} \\
+    \rowcolor{PBALightGray}
+    \acsparam{KI} & Integral gain & 0.08 & \si{\ampere\per\newton\per\second} \\
+    \acsparam{KD} & Derivative gain & 0.001 & \si{\ampere\second\per\newton} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+%% ══════════════════════════════════════════════════════════════════════════════
+\section{Prerequisites and Safety Notices}
+
+\begin{dangerbox}
+  The Z-axis motor exerts forces up to \SI{500}{\newton}. Never place hands
+  under the Z-axis head while servos are enabled. Use the Emergency Stop
+  (E-Stop) when adjusting hardware with the machine energised.
+\end{dangerbox}
+
+\bigskip
+
+\begin{warningbox}
+  Force control mode removes position-based end-of-travel protection.
+  An incorrectly tuned loop can drive the axis into hard contact at high
+  current. Set a conservative force limit before enabling the loop for
+  the first time.
+\end{warningbox}
+
+\bigskip
+
+\begin{cautionbox}
+  The load cell cable shield must be grounded at the signal conditioner
+  end only.  Grounding at both ends causes a \SI{50}{\hertz} ground loop
+  and introduces noise into the force signal.
+\end{cautionbox}
+
+\bigskip
+
+\begin{notebox}
+  Parameter changes are non-persistent by default.  Use
+  \menu{File > Save Configuration} in the ACS MMI after confirming
+  stable operation.
+\end{notebox}
+
+
+%% ══════════════════════════════════════════════════════════════════════════════
+\section{Procedure}
+
+\subsection{Phase 1 — Enable Servo and Zero Sensor}
+
+\begin{warningbox}
+  Ensure no tooling or workpiece is under the Z-axis head before enabling
+  the servo.
+\end{warningbox}
+
+\begin{steplist}
+  \step Enable the Z-axis servo from the ACS MMI terminal:
+    \begin{acscode}[Enable Z-axis servo]
+\begin{lstlisting}
+; Enable servo on Axis 0
+ENABLE 0
+WAIT 100        ; Wait 100 ms to stabilise
+PRINT "Servo state: ", MFLAGS(0)
+\end{lstlisting}
+    \end{acscode}
+  \outcome{The axis indicator in the ACS MMI turns green.
+           \acsparam{MFLAGS} bit~0 is set.}
+
+  \step Zero the force sensor (no load applied):
+    \begin{acscode}[Zero the force sensor offset]
+\begin{lstlisting}
+GLOBAL REAL force_offset
+force_offset = AIN(0, 1)
+PRINT "Offset set to: ", force_offset, " V"
+\end{lstlisting}
+    \end{acscode}
+  \outcome{\code{force\_offset} is stored.  Value should be within
+           $\pm$\SI{0.05}{\volt}.}
+
+  \step Set PID gains and current limit:
+    \begin{acscode}[Set force loop parameters]
+\begin{lstlisting}
+KP(0) = 2.5
+KI(0) = 0.08
+KD(0) = 0.001
+DCURR(0) = 1.5
+PRINT "Gains set. KP=", KP(0)
+\end{lstlisting}
+    \end{acscode}
+\end{steplist}
+
+\subsection{Phase 2 — Python Force Logging}
+
+Run the logger from the host PC while the Z-axis makes contact:
+
+\begin{pythoncode}[force\_logger.py — launch from terminal]
+\begin{lstlisting}
+# Navigate to the project folder
+cd C:\PBA\ForceControl\scripts
+
+# Log for 30 seconds at 100 Hz
+python force_logger.py --ip 10.0.0.100 --duration 30
+
+# Quick check — print stats from the log
+import pandas as pd
+df = pd.read_csv("force_log.csv")
+print(f"Max force: {df['force_N'].max():.2f} N")
+print(f"Noise RMS: {df['force_N'].std():.4f} N")
+\end{lstlisting}
+\end{pythoncode}
+
+\videolink{https://your-video-url-here.com}{Watch: Force ramp test — ACS MMI and sensor feedback (45\,s)}
+
+
+%% ══════════════════════════════════════════════════════════════════════════════
+\section{Verification}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} X l l l @{}}
+  \toprule
+  \rowcolor{PBATableHeader}
+  \textcolor{white}{\bfseries Parameter} &
+  \textcolor{white}{\bfseries Criterion} &
+  \textcolor{white}{\bfseries Measured} &
+  \textcolor{white}{\bfseries Pass?} \\
+  \midrule
+  Force tracking error (steady state) & $<\pm$\SI{0.3}{\newton} & \rule{1.5cm}{0.4pt} & $\square$ \\
+  \rowcolor{PBALightGray}
+  Force noise RMS (no contact) & $<$\SI{0.1}{\newton} & \rule{1.5cm}{0.4pt} & $\square$ \\
+  Step response settling time & $<$\SI{150}{\milli\second} & \rule{1.5cm}{0.4pt} & $\square$ \\
+  \rowcolor{PBALightGray}
+  Overshoot (\SI{5}{\newton} step) & $<20\%$ & \rule{1.5cm}{0.4pt} & $\square$ \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+
+%% ══════════════════════════════════════════════════════════════════════════════
+\section{Troubleshooting}
+
+\begin{longtable}{@{} >{\bfseries\color{DangerRed}}p{0.28\textwidth}
+                       p{0.32\textwidth} p{0.32\textwidth} @{}}
+  \rowcolor{PBATableHeader}
+  \textcolor{white}{\bfseries\normalfont Problem} &
+  \textcolor{white}{\bfseries Probable Cause} &
+  \textcolor{white}{\bfseries Corrective Action} \\
+  \endfirsthead
+  \rowcolor{PBATableHeader}
+  \textcolor{white}{\bfseries\normalfont Problem} &
+  \textcolor{white}{\bfseries Probable Cause} &
+  \textcolor{white}{\bfseries Corrective Action} \\
+  \endhead
+  \bottomrule
+  \endlastfoot
+
+  Axis does not enable &
+    E-Stop active or interlock open &
+    Release E-Stop. Check I/O status in MMI. \\
+  \rowcolor{PBALightGray}
+  Force offset $>$\SI{0.5}{\newton} at zero load &
+    Sensor not zeroed or thermal drift &
+    Re-run Phase~1 Step~2. Allow 15 min warm-up. \\
+  High noise $>$\SI{0.5}{\newton} RMS &
+    Ground loop on sensor cable &
+    Ground shield at conditioner end only. \\
+  \rowcolor{PBALightGray}
+  Force loop oscillates &
+    \acsparam{KP} too high &
+    Reduce \acsparam{KP} by 50\%. Reset \acsparam{KI}=0, retune. \\
+\end{longtable}
+
+
+%% ══════════════════════════════════════════════════════════════════════════════
+\section*{Keywords and FAIR Metadata}
+\addcontentsline{toc}{section}{FAIR Metadata}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries\color{PBAMain}}l X @{}}
+  \toprule
+  Document ID & \texttt{\ANnumber} \\
+  \rowcolor{PBALightGray}
+  Keywords & force control; ACS SPiiPlus; gantry; bonding; calibration \\
+  Data format & CSV (UTF-8, ISO 8601 timestamps) \\
+  \rowcolor{PBALightGray}
+  Standards & IEC/IEEE 82079-1:2019 · ANSI Z535.6 · FAIR Principles \\
+  License & PBA Systems Proprietary \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\end{document}
